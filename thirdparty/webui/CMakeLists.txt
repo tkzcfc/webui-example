@@ -11,19 +11,8 @@ set(WEBUI_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include" CACHE STRING "webui 
 
 if(WINDOWS)
   target_link_libraries(${target_name}
-    ${platform_spec_path}/webui-2.lib
-    ${platform_spec_path}/webui-2-secure.lib
     ${platform_spec_path}/webui-2-static.lib
-    ${platform_spec_path}/webui-2-secure-static.lib
   )
-
-  add_custom_command(TARGET ${target_name} POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-      ${platform_spec_path}/webui-2.dll
-      ${platform_spec_path}/webui-2-secure.dll
-      ${OutBinDir}
-  )
-
 
   # 设置静态链接到 VCRuntime
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MT")
@@ -31,39 +20,15 @@ if(WINDOWS)
 endif()
 
 if(UNIX AND NOT APPLE)
-
-  # 查找OpenSSL
-  # apt install libssl-dev
-  find_package(OpenSSL REQUIRED)
   
   target_link_libraries(${target_name}
-    ${platform_spec_path}/libwebui-2-secure-static.a
     ${platform_spec_path}/libwebui-2-static.a
-    OpenSSL::SSL
-    OpenSSL::Crypto
-  )
-
-  add_custom_command(TARGET ${target_name} POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-      ${platform_spec_path}/webui-2.so
-      ${platform_spec_path}/webui-2-secure.so
-      ${OutBinDir}
   )
 endif()
 
 if(APPLE)
   target_link_libraries(${target_name}
-    ${platform_spec_path}/libwebui-2-secure-static.a
     ${platform_spec_path}/libwebui-2-static.a
-    ${platform_spec_path}/libwebui-2.dylib
-    ${platform_spec_path}/libwebui-2-secure.dylib
-  )
-
-  add_custom_command(TARGET ${target_name} POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-      ${platform_spec_path}/webui-2.dylib
-      ${platform_spec_path}/webui-2-secure.dylib
-      ${OutBinDir}
   )
 endif()
 
